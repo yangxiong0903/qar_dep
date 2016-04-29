@@ -273,7 +273,7 @@ class MERGE_DECODE_LIST():
                 filedata = file_object.read()
                 file_object.close()
             else:
-                print u"raw不存在，退出此文件夹：" + file
+                print u"there is no raw.dat:" + file
                 continue
 
             if file[0:6] in WQAR512_SERISE_list:
@@ -318,7 +318,7 @@ class MERGE_DECODE_LIST():
         allendtime = time.time()
         print "all_row_number: %s, all_write_time : %s" %(all_row_number, all_write_time)
         print "all one seconds write : %s lines" % (all_row_number/all_write_time)
-        print u"全参数译码总耗时：%s" % (allendtime - allstarttime)
+        print "all decode cost：%s" % (allendtime - allstarttime)
 
     def save_to_csv(self, list_all_para_turn, file):
         numpy_arr = numpy.array(list_all_para_turn)
@@ -327,7 +327,7 @@ class MERGE_DECODE_LIST():
         #df_s.to_excel(file + '.xlsx', sheet_name='Sheet1')
         numpy.savetxt(file + '.csv', numpy_arr, fmt="%s", delimiter=",")
         xlsx_end_time = time.clock()
-        print u"%s 保存时间：%f" % (file, xlsx_end_time - xlsx_start_time)
+        print "%s save csv cost：%f" % (file, xlsx_end_time - xlsx_start_time)
 
 '''
 if __name__=="__main__":
