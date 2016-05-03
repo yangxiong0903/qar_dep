@@ -125,9 +125,31 @@ class FLT_tag():
             list_turn[201 - 1] = list_radio_result
         else:
             list_turn[219 - 1] = list_radio_result
+        # vertical_acc
+        list_turn = self.vertical_acc(list_turn, WQAR_conf)
+
         list_result = map(list, zip(*list_turn))
 
         return list_radio_msp , list_result
+
+    def vertical_acc(self, list_turn, WQAR_conf):
+
+        if WQAR_conf == '737_3C':
+            list_ver_index = range(403, 411, 1)
+            for index in list_ver_index:
+                list_turn[index - 1] = self.minus(list_turn[index - 1], -3.3750111)
+        else:
+            list_ver_index = range(465, 481, 1)
+            for index in list_ver_index:
+                list_turn[index - 1] = self.minus(list_turn[index - 1], -3.3750111)
+
+        return list_turn
+
+    def minus(self, list_single, value):
+        for index in range(len(list_single)):
+            list_single[index] = list_single[index] + value
+        return list_single
+
 
     def merge_para_list(self, some_para_list):
         for list_item in some_para_list[1:]:
