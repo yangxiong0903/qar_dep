@@ -248,77 +248,63 @@ class MERGE_DECODE_LIST():
         return list_all_para
 
 
-    def all_decode_list(self, dir_path, output_funciton):
+    def all_decode_list(self, path, file_name):
 
         allstarttime = time.time()
         merge_decode_list = MERGE_DECODE_LIST()
 
         #单位电脑路径
-        path = dir_path
-        dirs = os.listdir(path)
         WQAR512_SERISE_list = AC_WQAR_CONFIG().WQAR_7_SERISE_list
-
         WQAR256_SERISE_list = AC_WQAR_CONFIG().WQAR_3C_SERISE_list
 
-        all_row_number = 0
-        all_write_time = 0
-        #file_output=file("GMT_EGT.txt","a+")
-        for file in dirs:
-            #初始化缓存列表
-            list_single_para = []
-            list_all_para = []
-            single_path = path + '/' + file + '/' + 'raw.dat'
-            if os.path.exists(single_path):
-                file_object = open(single_path,'rb')
-                filedata = file_object.read()
-                file_object.close()
-            else:
-                print u"there is no raw.dat:" + file
-                continue
+        #初始化缓存列表
+        list_single_para = []
+        list_all_para = []
+        single_path = path + '/' + file_name + '/' + 'raw.dat'
+        if os.path.exists(single_path):
+            file_object = open(single_path,'rb')
+            filedata = file_object.read()
+            file_object.close()
+        else:
+            print u"there is no raw.dat:" + file_name
+            return
 
-            if file[0:6] in WQAR512_SERISE_list:
-                starttime = time.clock()
-                #读取csv参数列表，解码大量数值参数
-                list_number = merge_decode_list.open_csv_and_merge(filedata,
-                                                                   os.path.join(cur_file_dir(), '737-7 numeric.csv'),
-                                                                   512,
-                                                                   'number')
+        if file_name[0:6] in WQAR512_SERISE_list:
+            starttime = time.clock()
+            #读取csv参数列表，解码大量数值参数
+            list_number = merge_decode_list.open_csv_and_merge(filedata,
+                                                               os.path.join(cur_file_dir(), '737-7 numeric.csv'),
+                                                               512,
+                                                               'number')
 
-                #读取csv逻辑参数列表，解码大量逻辑参数
-                list_logic = merge_decode_list.open_csv_and_merge(filedata,
-                                                                  os.path.join(cur_file_dir(), '737-7 LOGIC.csv'),
-                                                                  512,
-                                                                  'logic')
-                list_number.extend(list_logic)
-                list_all_para = list_number
+            #读取csv逻辑参数列表，解码大量逻辑参数
+            list_logic = merge_decode_list.open_csv_and_merge(filedata,
+                                                              os.path.join(cur_file_dir(), '737-7 LOGIC.csv'),
+                                                              512,
+                                                              'logic')
+            list_number.extend(list_logic)
+            list_all_para = list_number
 
-            if file[0:6] in WQAR256_SERISE_list:
-                starttime = time.clock()
-                #读取csv参数列表，解码大量数值参数
-                list_number = merge_decode_list.open_csv_and_merge(filedata,
-                                                                   os.path.join(cur_file_dir(), '737-3C NUM.csv'),
-                                                                   256,
-                                                                   'number')
+        if file_name[0:6] in WQAR256_SERISE_list:
+            starttime = time.clock()
+            #读取csv参数列表，解码大量数值参数
+            list_number = merge_decode_list.open_csv_and_merge(filedata,
+                                                               os.path.join(cur_file_dir(), '737-3C NUM.csv'),
+                                                               256,
+                                                               'number')
 
-                #读取csv逻辑参数列表，解码大量逻辑参数
-                list_logic = merge_decode_list.open_csv_and_merge(filedata,
-                                                                  os.path.join(cur_file_dir(), '737-3C LOGIC.csv'),
-                                                                  256,
-                                                                  'logic')
-                list_number.extend(list_logic)
-                list_all_para = list_number
+            #读取csv逻辑参数列表，解码大量逻辑参数
+            list_logic = merge_decode_list.open_csv_and_merge(filedata,
+                                                              os.path.join(cur_file_dir(), '737-3C LOGIC.csv'),
+                                                              256,
+                                                              'logic')
+            list_number.extend(list_logic)
+            list_all_para = list_number
+
+        list_all_para_turn = map(list, zip(*list_all_para))
+        return list_all_para_turn
 
 
-            list_all_para_turn = map(list, zip(*list_all_para))
-
-            row_number, write_time = output_funciton(list_all_para_turn, file)
-            all_row_number = all_row_number + row_number
-            all_write_time = all_write_time + write_time
-
-        allendtime = time.time()
-        print "all_row_number: %s, all_write_time : %s" %(all_row_number, all_write_time)
-        print "all one seconds write : %s lines" % (all_row_number/all_write_time)
-        print "all decode cost：%s" % (allendtime - allstarttime)
 
     def save_to_csv(self, list_all_para_turn, file):
         numpy_arr = numpy.array(list_all_para_turn)
