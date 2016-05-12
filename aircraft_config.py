@@ -24,8 +24,8 @@ class AC_WQAR_CONFIG:
 
     def juge_config(self, str_ac_number):
         if str_ac_number in self.WQAR_3C_SERISE_list:
-            return "737-3C"
+            return "737_3C"
         elif str_ac_number in self.WQAR_7_SERISE_list:
-            return "737-7"
+            return "737_7"
         else:
             return False
