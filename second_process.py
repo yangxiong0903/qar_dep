@@ -46,7 +46,8 @@ class second_process(object):
         gmt_fill = gmt_fill.astype('int32')
         gmt_fill = gmt_fill.astype('S32')
         gmt_s = gmt_fill.apply(gmt_process, axis=1)
-        return gmt_s
+        df['$GMT TIME'] = gmt_s
+        return df
 
     def vertical_acc(self, df, WQAR_conf):
         if WQAR_conf == '737_3C':
@@ -59,3 +60,4 @@ class second_process(object):
             order = index - 1
             df.iloc[:,order] = df.iloc[:,order] - 3.3750111
         return df
+

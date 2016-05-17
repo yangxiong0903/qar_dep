@@ -318,5 +318,6 @@ class MERGE_DECODE_LIST():
 '''
 if __name__=="__main__":
     decode_list = MERGE_DECODE_LIST()
-    decode_list.all_decode_list(decode_list.save_to_csv)
+    list_turn = decode_list.all_decode_list(r'G:\QAR_DATA\append_upload', 'B-5202_20160516035349.wgl')
+    decode_list.save_to_csv(list_turn, '5202_CA1638')
 '''
