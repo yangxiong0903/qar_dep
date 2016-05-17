@@ -13,6 +13,12 @@ def gmt_process(x):
         x[order] = x[order].zfill(2)
     return x[0] + ':' + x[1] + ':' + x[2]
 
+def df_combine(df, list_order):
+    for order in list_order:
+        df_first = df.iloc[:, list_order[0]].replace('', np.nan)
+        df.iloc[:, list_order[0]] = df_first.combine_first(df.iloc[:, order])
+    return df
+
 class second_process(object):
 
     def __init__(self):
@@ -71,10 +77,6 @@ class second_process(object):
         elif WQAR_conf == '737_3C':
             list_OIL_1_index = range(172, 180)
             list_OIL_2_index = range(184, 192)
-            for order in list_OIL_1_index:
-                oil_first = df.iloc[:, 172].replace('', np.nan)
-                df.iloc[:, 172] = oil_first.combine_first(df.iloc[:, order])
-            for order in list_OIL_2_index:
-                oil_first = df.iloc[:, 184].replace('', np.nan)
-                df.iloc[:, 184] = oil_first.combine_first(df.iloc[:, order])
+            df = df_combine(df, list_OIL_1_index)
+            df = df_combine(df, list_OIL_2_index)
         return df
