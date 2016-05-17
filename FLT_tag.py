@@ -76,6 +76,7 @@ class FLT_tag():
         #去除航班号中的空格
         final_number = final_number.replace(' ','')
         return final_number
+
     def get_RADIO_HEIGHT(self, list_qar, WQAR_conf):
         list_turn = map(list, zip(*list_qar))
         # 多加了一行填到[0]，故可从下标1开始算
@@ -132,6 +133,26 @@ class FLT_tag():
 
         return list_radio_msp , list_result
 
+    def merge_para_list(self, some_para_list):
+        for list_item in some_para_list[1:]:
+            for list_index in range(len(list_item)):
+                if list_item[list_index] <> '':
+                    some_para_list[0][list_index] = list_item[list_index]
+        return some_para_list[0]
+
+    def map_radio_height(self, list_radio_msp, list_radio_lsp):
+        for index in range(len(list_radio_msp)):
+            if list_radio_lsp[index] < 0:
+                bit_code = ~(int(list_radio_msp[index]) / 2048)
+                bit_code = bit_code & 3
+                list_radio_msp[index] = -2048 * bit_code + list_radio_lsp[index]
+            else:
+                list_radio_msp[index] = list_radio_msp[index] + list_radio_lsp[index]
+        list_radio_map = list_radio_msp
+        return list_radio_map
+
+
+
     def vertical_acc(self, list_turn, WQAR_conf):
 
         if WQAR_conf == '737_3C':
@@ -149,25 +170,6 @@ class FLT_tag():
         for index in range(len(list_single)):
             list_single[index] = list_single[index] + value
         return list_single
-
-
-    def merge_para_list(self, some_para_list):
-        for list_item in some_para_list[1:]:
-            for list_index in range(len(list_item)):
-                if list_item[list_index] <> '':
-                    some_para_list[0][list_index] = list_item[list_index]
-        return some_para_list[0]
-
-    def map_radio_height(self, list_radio_msp, list_radio_lsp):
-        for index in range(len(list_radio_msp)):
-            if list_radio_lsp[index] < 0:
-                bit_code = ~(int(list_radio_msp[index])/2048)
-                bit_code = bit_code & 3
-                list_radio_msp[index] = -2048 * bit_code + list_radio_lsp[index]
-            else:
-                list_radio_msp[index] = list_radio_msp[index] + list_radio_lsp[index]
-        list_radio_map = list_radio_msp
-        return list_radio_map
 
     def get_GMT_list(self, list_qar, WQAR_conf):
         list_turn = list_qar

@@ -35,14 +35,18 @@ class second_process(object):
     def GMT_merge(self, df, WQAR_conf):
         if WQAR_conf == '737_3C':
             gmt_order = [88, 89, 90]
+            gmt_raw = df.iloc[:, gmt_order]
+            gmt_raw = gmt_raw.replace('', np.nan)
+            gmt_fill = gmt_raw.fillna(method='bfill')
+            gmt_fill = gmt_fill.fillna(method='ffill')
         elif WQAR_conf == '737_7': # '737_7'
             gmt_order = [95, 96, 97]
+            gmt_raw = df.iloc[:, gmt_order]
+            gmt_raw = gmt_raw.replace('', np.nan)
+            gmt_fill = gmt_raw.fillna(method='ffill')
+            gmt_fill = gmt_fill.fillna(method='bfill')
         else:
-            return None
-        gmt_raw = df.iloc[:, gmt_order]
-        gmt_raw = gmt_raw.replace('', np.nan)
-        gmt_fill = gmt_raw.fillna(method='ffill')
-        print gmt_fill
+            return df
         gmt_fill = gmt_fill.astype('int32')
         gmt_fill = gmt_fill.astype('S32')
         gmt_s = gmt_fill.apply(gmt_process, axis=1)
@@ -55,9 +59,22 @@ class second_process(object):
         elif WQAR_conf == '737_7':
             list_ver_index = range(465, 481, 1)
         else:
-            return None
+            return df
         for index in list_ver_index:
             order = index - 1
             df.iloc[:,order] = df.iloc[:,order] - 3.3750111
         return df
 
+    def eng_oil_merge(self, df, WQAR_conf):
+        if WQAR_conf == '737_7':
+            return df
+        elif WQAR_conf == '737_3C':
+            list_OIL_1_index = range(172, 180)
+            list_OIL_2_index = range(184, 192)
+            for order in list_OIL_1_index:
+                oil_first = df.iloc[:, 172].replace('', np.nan)
+                df.iloc[:, 172] = oil_first.combine_first(df.iloc[:, order])
+            for order in list_OIL_2_index:
+                oil_first = df.iloc[:, 184].replace('', np.nan)
+                df.iloc[:, 184] = oil_first.combine_first(df.iloc[:, order])
+        return df
