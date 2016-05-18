@@ -25,11 +25,15 @@ def radio_msp_binary_caculation(x):
     bit_code = bit_code * -2048
     return bit_code
 
+def radio_msp_lsp(x):
+    if x[1] < 0:
+        x[0] = radio_msp_binary_caculation(x[0])
+    x[0] = x[0] + x[1]
+    return x[0]
+
 def radio_msp_lsp_caculation(df, msp_order, lsp_order):
-    radio_msp = df.iloc[:, msp_order][df.iloc[:, lsp_order] < 0].map(
-        radio_msp_binary_caculation)
-    df.iloc[:, msp_order][df.iloc[:, lsp_order] < 0] = radio_msp + df.iloc[:, lsp_order][df.iloc[:, lsp_order] < 0]
-    df.iloc[:, msp_order][df.iloc[:, lsp_order] >= 0] = df.iloc[:, msp_order][df.iloc[:, lsp_order] >= 0] + df.iloc[:, lsp_order][df.iloc[:, lsp_order] >= 0]
+    radio = df.iloc[:, [msp_order, lsp_order]]
+    df.iloc[:, msp_order]= radio.apply(radio_msp_lsp, axis = 1)
     return df
 
 class flight_information(object):
