@@ -32,7 +32,7 @@ def radio_msp_lsp_caculation(df, msp_order, lsp_order):
     df.iloc[:, msp_order][df.iloc[:, lsp_order] >= 0] = df.iloc[:, msp_order][df.iloc[:, lsp_order] >= 0] + df.iloc[:, lsp_order][df.iloc[:, lsp_order] >= 0]
     return df
 
-class second_process(object):
+class flight_information(object):
 
     def __init__(self):
         pass
@@ -40,16 +40,40 @@ class second_process(object):
     def flight_number(self, df, WQAR_conf):
         if WQAR_conf == '737_3C':
             list_all_flt = exchange(range(504, 512))
-        elif WQAR_conf == '737_7': # '737_7'
+        elif WQAR_conf == '737_7':  # '737_7'
             list_all_flt = exchange(range(663, 671))
         else:
             return None
         str_flt = ''
         for sq in list_all_flt:
-            s_flt = df.iloc[:,sq].value_counts()
+            s_flt = df.iloc[:, sq].value_counts()
             chr_flt = chr(s_flt.index[1])
             str_flt = str_flt + chr_flt
         return str_flt
+
+    def flight_status(self, df, WQAR_conf):
+        if WQAR_conf == '737_3C':
+            radio_order = 201 - 1
+        elif WQAR_conf == '737_7':
+            radio_order = 219 - 1
+        else:
+            return None
+        if df.iloc[:, radio_order].max()>15:
+            return 'FLIGHT'
+        else:
+            return 'GROUND'
+
+class second_process(object):
+
+    def __init__(self):
+        pass
+
+    def main(self, qar_df, WQAR_conf):
+        df = self.GMT_merge(qar_df, WQAR_conf)
+        df = self.vertical_acc(df, WQAR_conf)
+        df = self.eng_oil_merge(df, WQAR_conf)
+        df = self.radio_calculate(df, WQAR_conf)
+        return df
 
     def GMT_merge(self, df, WQAR_conf):
         if WQAR_conf == '737_3C':
