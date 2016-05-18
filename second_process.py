@@ -19,6 +19,19 @@ def df_combine(df, list_order):
         df.iloc[:, list_order[0]] = df_first.combine_first(df.iloc[:, order])
     return df
 
+def radio_msp_binary_caculation(x):
+    bit_code = ~(int(x/ 2048))
+    bit_code = bit_code & 3
+    bit_code = bit_code * -2048
+    return bit_code
+
+def radio_msp_lsp_caculation(df, msp_order, lsp_order):
+    radio_msp = df.iloc[:, msp_order][df.iloc[:, lsp_order] < 0].map(
+        radio_msp_binary_caculation)
+    df.iloc[:, msp_order][df.iloc[:, lsp_order] < 0] = radio_msp + df.iloc[:, lsp_order][df.iloc[:, lsp_order] < 0]
+    df.iloc[:, msp_order][df.iloc[:, lsp_order] >= 0] = df.iloc[:, msp_order][df.iloc[:, lsp_order] >= 0] + df.iloc[:, lsp_order][df.iloc[:, lsp_order] >= 0]
+    return df
+
 class second_process(object):
 
     def __init__(self):
@@ -79,4 +92,24 @@ class second_process(object):
             list_OIL_2_index = range(184, 192)
             df = df_combine(df, list_OIL_1_index)
             df = df_combine(df, list_OIL_2_index)
+        return df
+
+    def radio_calculate(self, qar_df, WQAR_conf):
+        if WQAR_conf == '737_3C':
+            list_radio_msp_index = [201, 341, 202, 343]
+            list_radio_lsp_index = [203, 342, 204, 344]
+        elif WQAR_conf == '737_7':
+            list_radio_msp_index = [219, 313, 314, 315, 316, 321, 322, 323, 324]
+            list_radio_lsp_index = [220, 317, 318, 319, 320, 325, 326, 327, 328]
+        else:
+            return qar_df
+            # compute LRRA
+        list_radio_msp_index = map(lambda x: x - 1, list_radio_msp_index)
+        list_radio_lsp_index = map(lambda x: x - 1, list_radio_lsp_index)
+        df = df_combine(qar_df, list_radio_msp_index)
+        df = df_combine(df, list_radio_lsp_index)
+        for order in range(len(list_radio_lsp_index)):
+            df = radio_msp_lsp_caculation(df,
+                                          list_radio_msp_index[order],
+                                          list_radio_lsp_index[order])
         return df
