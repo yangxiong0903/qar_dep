@@ -53,7 +53,7 @@ class flight_information(object):
             s_flt = df.iloc[:, sq].value_counts()
             chr_flt = chr(s_flt.index[1])
             str_flt = str_flt + chr_flt
-        return str_flt
+        return str_flt.replace(' ', '')
 
     def flight_status(self, df, WQAR_conf):
         if WQAR_conf == '737_3C':
