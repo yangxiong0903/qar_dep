@@ -112,15 +112,19 @@ class second_process(object):
             df.iloc[:,order] = df.iloc[:,order] - 3.3750111
         return df
 
-    def eng_oil_merge(self, df, WQAR_conf):
+    def eng_oil_merge(self, qar_df, WQAR_conf):
         if WQAR_conf == '737_7':
-            return df
+            return qar_df
         elif WQAR_conf == '737_3C':
             list_OIL_1_index = range(172, 180)
             list_OIL_2_index = range(184, 192)
-            df = df_combine(df, list_OIL_1_index)
+            df = df_combine(qar_df, list_OIL_1_index)
             df = df_combine(df, list_OIL_2_index)
-        return df
+            oil_temp_1 = range(243, 251)
+            oil_temp_2 = range(251, 259)
+            df = df_combine(df, oil_temp_1)
+            df = df_combine(df, oil_temp_2)
+            return df
 
     def radio_calculate(self, qar_df, WQAR_conf):
         if WQAR_conf == '737_3C':
