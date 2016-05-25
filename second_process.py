@@ -36,6 +36,24 @@ def radio_msp_lsp_caculation(df, msp_order, lsp_order):
     df.iloc[:, msp_order]= radio.apply(radio_msp_lsp, axis = 1)
     return df
 
+def flap_cacu(value):
+    """
+    y = np.array([-112, -40, -1, 0, 1, 2, 5, 10, 15, 25, 30, 40, 112])
+    x = np.array([-180, -108.13, -17, 0, 17.58, 30.67, 41.75, 52.62, 64.86, 77.38, 90.44, 108.13, 180])
+    polynomial = np.polyfit(x, y, 10)  # 用3次多项式拟合
+    """
+    polynomial = np.array([ -2.85593573e-18,   5.34870752e-16,   9.45470132e-14,
+        -2.29814827e-11,   3.07992481e-10,   1.75352813e-07,
+        -1.21685022e-05,   2.72090256e-04,   2.41416423e-03,
+        -4.59913906e-02,   9.21541838e-02])
+    equation = np.poly1d(polynomial)
+    if isinstance(value, float):
+        result = equation(value)
+        result = round(result, 2)
+        return result
+    else:
+        return value
+
 class flight_information(object):
 
     def __init__(self):
@@ -77,6 +95,7 @@ class second_process(object):
         df = self.vertical_acc(df, WQAR_conf)
         df = self.eng_oil_merge(df, WQAR_conf)
         df = self.radio_calculate(df, WQAR_conf)
+        df = self.flap_hand_postion(df, WQAR_conf)
         return df
 
     def GMT_merge(self, df, WQAR_conf):
@@ -144,4 +163,15 @@ class second_process(object):
             df = radio_msp_lsp_caculation(df,
                                           list_radio_msp_index[order],
                                           list_radio_lsp_index[order])
+        return df
+
+    def flap_hand_postion(self, qar_df, WQAR_conf):
+        if WQAR_conf == '737_3C':
+            flap_order = 303
+        elif WQAR_conf == '737_7':
+            flap_order = 301
+        else:
+            return qar_df
+        df = qar_df
+        df.iloc[:,flap_order] = df.iloc[:, flap_order].map(flap_cacu)
         return df
