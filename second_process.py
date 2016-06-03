@@ -96,15 +96,15 @@ class flight_information(object):
 
     def flight_status(self, df, WQAR_conf):
         if WQAR_conf == '737_3C':
-            # N1 > 20
-            df_flight = section_criterion(df, 'flight', [281, 282])
+            AIR_GROUND_order = [1305, 1307]
         elif WQAR_conf == '737_7':
-            # flight radio height > 15
-            df_flight = section_criterion(df, 'flight', [273, 274])
+            AIR_GROUND_order = [1559, 1601]
         else:
             return None
-
-        if df_flight.shape[0]>6:
+        AIR_GROUND_order = [i - 1 for i in AIR_GROUND_order]
+        df_AIR_GROUND_1 = df.iloc[:, AIR_GROUND_order[0]]
+        df_AIR_GROUND_2 = df.iloc[:, AIR_GROUND_order[1]]
+        if df_AIR_GROUND_1.str.contains('AIR').sum() > 0 or df_AIR_GROUND_2.str.contains('AIR').sum() > 0:
             return 'FLIGHT'
         else:
             return 'GROUND'
