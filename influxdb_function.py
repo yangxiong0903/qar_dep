@@ -32,6 +32,11 @@ class influxDB_interface():
         result = self.DFclient(dbname).query(sql_str)
         return result
 
+    def limit_query(self, dbname, value, mes):
+        sql_str = "SELECT " + value + " FROM " + mes + " ORDER BY time DESC LIMIT 7"
+        result = self.DFclient(dbname).query(sql_str)
+        return result
+
     def list_query(self, dbname, list, mes, AC_sector):
         index_str = add_sign('index') + ","
         GMT_str = add_sign('$GMT TIME') + ","
