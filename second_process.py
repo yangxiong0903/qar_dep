@@ -1,6 +1,27 @@
 #coding=utf-8
 import numpy as np
-import pandas
+import pandas as pd
+
+
+def section_criterion(df, condition, n1_list):
+    criterion_result = pd.Series(True, index=df.index)
+    if condition == 'flight':
+        for n1_order in n1_list:
+            criterion = df.iloc[:, n1_order].copy()
+            for i in criterion.index[:-4]:
+                logic_condition = True
+                for t in range(5):
+                    if criterion[i + t] > 20:
+                        logic_condition = True & logic_condition
+                    else:
+                        logic_condition = False & logic_condition
+                criterion[i] = logic_condition
+
+            for i in criterion.index[-4:]:
+                criterion[i] = False
+            criterion_result = criterion & criterion_result
+        return df[criterion_result]
+
 
 def exchange(list_index):
     for i in range(len(list_index)):
@@ -75,12 +96,15 @@ class flight_information(object):
 
     def flight_status(self, df, WQAR_conf):
         if WQAR_conf == '737_3C':
-            radio_order = 201 - 1
+            # N1 > 20
+            df_flight = section_criterion(df, 'flight', [281, 282])
         elif WQAR_conf == '737_7':
-            radio_order = 219 - 1
+            # flight radio height > 15
+            df_flight = section_criterion(df, 'flight', [273, 274])
         else:
             return None
-        if df.iloc[:, radio_order].max()>15:
+
+        if df_flight.shape[0]>6:
             return 'FLIGHT'
         else:
             return 'GROUND'
