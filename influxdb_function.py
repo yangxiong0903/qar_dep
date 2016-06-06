@@ -27,8 +27,8 @@ class influxDB_interface():
         clientdb = DataFrameClient(str_IP_address, 8086, user, password, dbname)
         return clientdb
 
-    def inf_query(self, dbname, value, mes):
-        sql_str = "SELECT " + value + " FROM " + mes + " ORDER BY time DESC "
+    def inf_query(self, dbname, value, mes, where_str = ''):
+        sql_str = "SELECT " + value + " FROM " + mes + where_str + " ORDER BY time DESC "
         result = self.DFclient(dbname).query(sql_str)
         return result
 
