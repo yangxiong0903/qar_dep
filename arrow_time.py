@@ -22,3 +22,8 @@ def today_date_for_influxd_sql():
     today = arrow.utcnow().replace(hours=8)
     today_number = today.format('YYYY-MM-DD')
     return today_number
+
+def ten_day_ago_for_influxd_sql():
+    today = arrow.utcnow().replace(hours=-232)
+    today_number = today.format('YYYY-MM-DD')
+    return today_number
