@@ -47,3 +47,9 @@ class influxDB_interface():
         result = self.DFclient(dbname).query(sql_str)
         result = result[mes]
         return result
+
+    def show_fields(self, dbname, mes):
+        sql_str = "SHOW FIELD KEYS FROM " + mes
+        result = self.DFclient(dbname).query(sql_str)
+        result = result[mes]
+        return result
