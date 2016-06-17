@@ -48,6 +48,14 @@ class influxDB_interface():
         result = result[mes]
         return result
 
+    def all_query(self, dbname, mes, AC_sector):
+        mes_str = add_sign(mes)
+        where_str = " WHERE \"AC_sector\" =" + add_single_quotes(AC_sector)
+        sql_str = "SELECT * FROM " + mes_str + where_str
+        result = self.DFclient(dbname).query(sql_str)
+        result = result[mes]
+        return result
+
     def show_fields(self, dbname, mes):
         sql_str = "SHOW FIELD KEYS FROM " + mes
         result = self.DFclient(dbname).query(sql_str)
