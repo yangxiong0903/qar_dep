@@ -88,11 +88,14 @@ class flight_information(object):
         else:
             return None
         str_flt = ''
-        for sq in list_all_flt:
-            s_flt = df.iloc[:, sq].value_counts()
-            chr_flt = chr(s_flt.index[1])
-            str_flt = str_flt + chr_flt
-        return str_flt.replace(' ', '')
+        try:
+            for sq in list_all_flt:
+                s_flt = df.iloc[:, sq].value_counts()
+                chr_flt = str(int(s_flt.index[1]))
+                str_flt = str_flt + chr_flt
+            return str_flt.replace(' ', '')
+        except:
+            return ''
 
     def flight_status(self, df, WQAR_conf):
         if WQAR_conf == '737_3C':
@@ -110,6 +113,27 @@ class flight_information(object):
             return 'FLIGHT'
         else:
             return 'GROUND'
+
+    def flight_date(self, df, WQAR_conf):
+        if WQAR_conf == '737_3C':
+            list_date_order = [96, 97, 92, 93, 94, 95]
+        elif WQAR_conf == '737_7':  # '737_7'
+            list_date_order = [103, 104, 99, 100, 101, 102]
+        else:
+            return None
+        list_date_order = list(map(lambda x: x-1, list_date_order))
+        str_flt = ''
+        try:
+            for order in range(0, len(list_date_order), 2):
+                decade = df.iloc[:, list_date_order[order]].value_counts().index[1]
+                the_unit = df.iloc[:, list_date_order[order - 1]].value_counts().index[1]
+                double_bit = decade + the_unit
+                chr_flt = str(int(double_bit)).zfill(2)
+                str_flt = str_flt + chr_flt
+            str_flt = '20' + str_flt
+            return str_flt.replace(' ', '')
+        except:
+            return ''
 
 class second_process(object):
 
