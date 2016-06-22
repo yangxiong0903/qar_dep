@@ -116,9 +116,9 @@ class flight_information(object):
 
     def flight_date(self, df, WQAR_conf):
         if WQAR_conf == '737_3C':
-            list_date_order = [96, 97, 92, 93, 94, 95]
+            list_date_order = [96, 97, 94, 95, 92, 93]
         elif WQAR_conf == '737_7':  # '737_7'
-            list_date_order = [103, 104, 99, 100, 101, 102]
+            list_date_order = [103, 104, 101, 102, 99, 100]
         else:
             return None
         list_date_order = list(map(lambda x: x-1, list_date_order))
@@ -126,7 +126,7 @@ class flight_information(object):
         try:
             for order in range(0, len(list_date_order), 2):
                 decade = df.iloc[:, list_date_order[order]].value_counts().index[1]
-                the_unit = df.iloc[:, list_date_order[order - 1]].value_counts().index[1]
+                the_unit = df.iloc[:, list_date_order[order + 1]].value_counts().index[1]
                 double_bit = decade + the_unit
                 chr_flt = str(int(double_bit)).zfill(2)
                 str_flt = str_flt + chr_flt
