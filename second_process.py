@@ -91,7 +91,7 @@ class flight_information(object):
         try:
             for sq in list_all_flt:
                 s_flt = df.iloc[:, sq].value_counts()
-                chr_flt = str(int(s_flt.index[1]))
+                chr_flt = str(chr(s_flt.index[1]))
                 str_flt = str_flt + chr_flt
             return str_flt.replace(' ', '')
         except:
