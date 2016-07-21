@@ -1,7 +1,7 @@
 #coding=utf-8
 import numpy as np
 import pandas as pd
-
+import arrow
 
 def section_criterion(df, condition, n1_list):
     criterion_result = pd.Series(True, index=df.index)
@@ -33,6 +33,12 @@ def gmt_process(x):
     for order in range(3):
         x[order] = x[order].zfill(2)
     return x[0] + ':' + x[1] + ':' + x[2]
+
+def hour_add_8(str_time):
+    ar_time = arrow.get(str_time, 'HH:mm:ss')
+    ar_add_time = ar_time.replace(hours=8)
+    str_add_time = ar_add_time.format('HH:mm:ss')
+    return str_add_time
 
 def df_combine(df, list_order):
     for order in list_order:
@@ -164,11 +170,11 @@ class second_process(object):
         else:
             return df
         gmt_fill = gmt_fill.astype('int32')
-        #时间加8，变成北京时间
-        gmt_fill.iloc[:, 0] = gmt_fill.iloc[:, 0] + 8
         gmt_fill = gmt_fill.astype('S32')
         gmt_s = gmt_fill.apply(gmt_process, axis=1)
-        df['$GMT TIME'] = gmt_s
+        # 时间加8，变成北京时间
+        gmt_add = gmt_s.apply(hour_add_8)
+        df['$GMT TIME'] = gmt_add
         return df
 
     def vertical_acc(self, df, WQAR_conf):
