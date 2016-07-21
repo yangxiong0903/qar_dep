@@ -164,6 +164,8 @@ class second_process(object):
         else:
             return df
         gmt_fill = gmt_fill.astype('int32')
+        #时间加8，变成北京时间
+        gmt_fill.iloc[:, 0] = gmt_fill.iloc[:, 0] + 8
         gmt_fill = gmt_fill.astype('S32')
         gmt_s = gmt_fill.apply(gmt_process, axis=1)
         df['$GMT TIME'] = gmt_s
