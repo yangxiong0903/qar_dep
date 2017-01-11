@@ -117,8 +117,10 @@ class flight_information(object):
         df_AIR_GROUND_2 = df.iloc[:, AIR_GROUND_order[1]]
         if (df_AIR_GROUND_1.str.contains('AIR').sum() > 0 or df_AIR_GROUND_2.str.contains('AIR').sum() > 0 ) and df_flight.shape[0]>6 :
             return 'FLIGHT'
-        else:
+        elif (df_AIR_GROUND_1.str.contains('AIR').sum() == 0 and df_AIR_GROUND_2.str.contains('AIR').sum() == 0 ) and df_flight.shape[0]>6 :
             return 'GROUND'
+        else:
+            return None
 
     def flight_date(self, df, WQAR_conf):
         if WQAR_conf == '737_3C':
