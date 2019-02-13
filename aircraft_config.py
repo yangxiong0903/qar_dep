@@ -38,3 +38,7 @@ class AC_WQAR_CONFIG:
             return "737_7"
         else:
             return False
+
+    def all_aircraft(self):
+        aircraft_list = self.WQAR_3C_SERISE_list + self.WQAR_7_SERISE_list
+        return aircraft_list
