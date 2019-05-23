@@ -28,7 +28,7 @@ class AC_WQAR_CONFIG:
                                     "B-1416",
                                     "B-1217","B-1458",
                                     "B-1764","B-1769","B-1945",
-                                    "B-1947","B-206T"]
+                                    "B-1947","B-206T","B-5680"]
 
 
     def juge_config(self, str_ac_number):
